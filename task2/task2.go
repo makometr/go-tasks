@@ -4,7 +4,7 @@ import "fmt"
 
 // Задание:
 /*
-	Написать программу, которая конкурентно рассчитает значение квадратов значений взятых из массива (2,4,6,8,10) и выведет их квадраты в stdout.
+	Написать программу, которая конкурентн	о рассчитает значение квадратов значений взятых из массива (2,4,6,8,10) и выведет их квадраты в stdout.
 */
 
 // Комментарий к заданию:
@@ -13,7 +13,7 @@ import "fmt"
 */
 
 // Task2 release
-func Task2(nums []int) (results []string) {
+func Task2(nums ...int) (results []string) {
 	chans := make([]chan int, len(nums), len(nums))
 	for i := 0; i < len(chans); i++ {
 		chans[i] = make(chan int)

@@ -32,9 +32,18 @@ func TestTask2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotResults := Task2(tt.args.nums); !reflect.DeepEqual(gotResults, tt.wantResults) {
+			if gotResults := Task2(tt.args.nums...); !reflect.DeepEqual(gotResults, tt.wantResults) {
 				t.Errorf("Task2() = %v, want %v", gotResults, tt.wantResults)
 			}
 		})
 	}
+}
+
+func ExampleTestTask2() {
+	Task2(2, 4, 6)
+	// Output:
+	// 4
+	// 16
+	// 36
+	// All squares calculated!
 }

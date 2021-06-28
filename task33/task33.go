@@ -7,6 +7,9 @@ import "fmt"
 Результаты работы из второго канала пишутся в stdout.
 */
 
+// TODO Закрыть канал out в соответсвии с идиомой пайплайн
+// или написать две реализации
+
 // Task33 is
 func Task33(out chan<- int, in <-chan int) {
 	if out == nil {

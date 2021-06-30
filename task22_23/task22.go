@@ -1,4 +1,4 @@
-package task22
+package task22_23
 
 import (
 	"fmt"
@@ -31,8 +31,8 @@ func (sg ByMarksSum) Less(i, j int) bool {
 	return marksSumer(sg[i]) < marksSumer(sg[j])
 }
 
-// Task22 is
-func Task22(x interface{}) interface{} {
+// Sort22 is
+func Sort22(x interface{}) interface{} {
 	switch v := x.(type) {
 	case []int:
 		sort.Ints(v)
@@ -52,4 +52,12 @@ func Task22(x interface{}) interface{} {
 		fmt.Println("Unknown type")
 	}
 	return nil
+}
+
+func Search23(x []int, v int) int {
+	index := sort.SearchInts(x, v)
+	if index == len(x) || x[index] != v {
+		return len(x)
+	}
+	return index
 }

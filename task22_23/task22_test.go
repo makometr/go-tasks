@@ -1,11 +1,11 @@
-package task22
+package task22_23
 
 import (
 	"reflect"
 	"testing"
 )
 
-func TestTask22Int(t *testing.T) {
+func TestSort22(t *testing.T) {
 	type args struct {
 		x interface{}
 	}
@@ -49,8 +49,48 @@ func TestTask22Int(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Task22(tt.args.x); !reflect.DeepEqual(got, tt.want) {
+			if got := Sort22(tt.args.x); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Task22Int() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSearch23(t *testing.T) {
+	type args struct {
+		x []int
+		v int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "Ints non-sorted, Exist",
+			args: args{x: []int{1, 3, 4, 5, 10, 20, 50, 25, 41, 3}, v: 10},
+			want: 4,
+		},
+		{
+			name: "Ints non-sorted, no-Exist-1",
+			args: args{x: []int{1, 3, 4, 5, 10, 20, 50, 25, 41, 3}, v: 45},
+			want: 10,
+		},
+		{
+			name: "Ints sorted, Exist",
+			args: args{x: []int{1, 3, 3, 4, 5, 10, 20, 25, 41, 50}, v: 10},
+			want: 5,
+		},
+		{
+			name: "Ints sorted, no-Exist-1",
+			args: args{x: []int{1, 3, 3, 4, 5, 10, 20, 25, 41, 50}, v: 45},
+			want: 10,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Search23(tt.args.x, tt.args.v); got != tt.want {
+				t.Errorf("Search23() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -5,26 +5,32 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 )
 
-func Task4(input <-chan interface{}, workersNum int) (context.Context, context.CancelFunc) {
-	ctx, cancel := context.WithCancel(context.Background())
+func Task4(ctx context.Context, input <-chan interface{}, workersNum int) <-chan interface{} {
 	out := make(chan interface{})
+	isDone := make(chan interface{})
 
 	go func() {
 		for v := range out {
 			fmt.Println(v)
 		}
+		isDone <- struct{}{}
 	}()
+
+	var wg sync.WaitGroup
+	wg.Add(workersNum)
 
 	for i := 0; i < workersNum; i++ {
 		go func(ctx context.Context) {
+			defer wg.Done()
 			for v := range input {
 				// switch v.(type) {
 				// case string:
-				// 	cancel()
+				// 	cancel() // bad practice?
 				// 	return
 				// }
 				select {
@@ -34,10 +40,13 @@ func Task4(input <-chan interface{}, workersNum int) (context.Context, context.C
 				}
 			}
 		}(ctx)
-
 	}
 
-	return ctx, cancel
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
+	return isDone
 }
 
 // copy to main
@@ -57,15 +66,18 @@ func main() {
 			in <- i
 			time.Sleep(100 * time.Millisecond)
 		}
+		close(in)
 	}()
 
-	ctx, cancel := Task4(in, 5)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	// isDone := task4.Task4(ctx, in, 5)
+	isDone := Task4(ctx, in, 5)
 
 	select {
 	case <-sChan:
 		fmt.Println("Cancel order")
-		cancel()
-	case <-ctx.Done():
-		fmt.Println("Error: string in data stream")
+	case <-isDone:
+		fmt.Println("Datastream end!")
 	}
 }

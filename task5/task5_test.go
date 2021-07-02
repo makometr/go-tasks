@@ -11,8 +11,8 @@ func TestTask5(t *testing.T) {
 	Task5(secs)
 	end := time.Now()
 
-	if end.Sub(begin) > time.Duration(secs)+time.Duration(150)*time.Millisecond {
-		t.Errorf("Error more then %d sec: %d", secs, end.Sub(begin))
+	if time.Duration(end.Sub(begin).Seconds()) > time.Duration(secs)+time.Duration(100)*time.Millisecond {
+		t.Errorf("Error more then %d sec: %f sec", secs, end.Sub(begin).Seconds())
 	}
 
 }

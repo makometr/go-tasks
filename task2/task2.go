@@ -13,6 +13,7 @@ import "fmt"
 */
 
 // Task2 release
+// Без отмены, конкурктно, с синхонизацией
 func Task2(nums ...int) (results []string) {
 	chans := make([]chan int, len(nums), len(nums))
 	for i := 0; i < len(chans); i++ {

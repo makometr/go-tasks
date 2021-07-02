@@ -1,7 +1,9 @@
 package task3
 
 import (
-	"sync"
+	"errors"
+
+	"golang.org/x/sync/errgroup"
 )
 
 // Задание:
@@ -10,42 +12,36 @@ import (
 */
 
 // Task3 with wg
-func Task3(nums []int) int {
+func Task3(nums []int) (int, error) {
 	results := make(chan int, len(nums))
+	done := make(chan interface{})
+	result := 0
 
-	var wg sync.WaitGroup
-	wg.Add(len(nums))
+	go func() {
+		for v := range results {
+			result += v
+		}
+		done <- struct{}{}
+	}()
+
+	var g errgroup.Group
 	for i := 0; i < len(nums); i++ {
-		go func(index int) {
+		index := i
+		g.Go(func() error {
+			if nums[index] == 0 {
+				return errors.New("Error: zero")
+			}
 			results <- nums[index] * nums[index]
-			wg.Done()
-		}(i)
+			return nil
+		})
 	}
-	wg.Wait()
+	err := g.Wait()
+	close(results)
+	<-done
 
-	var result int
-	for i := 0; i < cap(results); i++ {
-		result += <-results
+	if err != nil {
+		return 0, err
 	}
 
-	return result
+	return result, nil
 }
-
-// func Task3(nums []int, gn int) int {
-// 	todo := make(chan int, len(nums))
-// 	results := make(chan int, len(nums))
-
-// 	go func() {
-// 		for n := range nums {
-// 			todo <- n
-// 		}
-// 	}()
-
-// 	for i := 0; i < gn; i++ {
-// 		go func() {
-// 			for value := range todo {
-// 				results <- value * value
-// 			}
-// 		}()
-// 	}
-// }
